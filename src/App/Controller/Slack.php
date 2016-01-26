@@ -68,12 +68,12 @@ class Slack
                     ->where('slack', '=', $target)
                     ->first();
 
-                $this->FireOrder->fire = false;
+                $this->FireOrder->fire = true;
                 $this->FireOrder->a = $coordinates['a'];
                 $this->FireOrder->e = $coordinates['e'];
                 $this->FireOrder->use_door = false;
-                $this->FireOrder->door_code = rand(0, 999);
-                $this->FireOrder->pending = true;
+                $this->FireOrder->door_code = rand(0, 999);  // TODO
+                $this->FireOrder->pending = true;  // TODO
                 $this->FireOrder->message = $req['user_name']." shot " .$target ."!";
 
                 // Save data
