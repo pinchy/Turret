@@ -11,7 +11,6 @@ class Turret
 
     public function Check($request, $response, $args)
     {
-
         $this->FireOrder->fire = false;
         $this->FireOrder->a = 4004;
         $this->FireOrder->e = 2002;
@@ -26,6 +25,4 @@ class Turret
         // Payload
         $response->write($this->FireOrder->toString());
     }
-
-
 }
