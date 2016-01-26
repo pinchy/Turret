@@ -4,21 +4,26 @@ namespace App\Bluechilli;
 
 class FireOrder
 {
-    var $fire;
-    var $a;
-    var $e;
-    var $use_door;
-    var $door_code;
+    public $fire;
+    public $a;
+    public $e;
+    public $use_door;
+    public $door_code;
+    public $pending;
 
-    var $pending;
+    private $_db;
+
+    public function __construct()
+    {
+        // https://packagist.org/packages/flatbase/flatbase
+        $storage = new \Flatbase\Storage\Filesystem('../src/db');
+        $this->_db = new \Flatbase\Flatbase($storage);
+    }
 
     // load the contents of this model for persistence
     public function Save()
-    {
-        $storage = new \Flatbase\Storage\Filesystem('../src/db');
-        $flatbase = new \Flatbase\Flatbase($storage);
-
-        $flatbase->insert()->in('orders')
+    {  
+        $this->_db->insert()->in('orders')
             ->set([ 'fire' => $this->fire,
                     'a' => $this->a,
                     'e' => $this->e,
@@ -31,11 +36,8 @@ class FireOrder
     // Save the contents of this model for persistence
     public function Load()
     {
-        $storage = new \Flatbase\Storage\Filesystem('../src/db');
-        $flatbase = new \Flatbase\Flatbase($storage);
-
-        $orders = $flatbase->read()->in('orders')->first();
-        $flatbase->delete()->in('orders')->execute();
+        $orders = $this->_db->read()->in('orders')->first();
+        $this->_db->delete()->in('orders')->execute();
 
         $this->fire = $orders['fire'];
         $this->a = $orders['a'];
