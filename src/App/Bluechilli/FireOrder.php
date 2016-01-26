@@ -11,7 +11,7 @@ class FireOrder
     var $use_door;
     var $door_code;
 
-    var $available;
+    var $pending_command;
 
     public function toString()
     {
