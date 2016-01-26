@@ -24,7 +24,7 @@ class Turret
     }
 
     // on completion of fireorder, turret executes this command
-    public function Done($request, $response, $args)
+    public function Splash($request, $response, $args)
     {
         // grab the last person who did it and push to slack
     }
