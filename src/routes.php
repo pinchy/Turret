@@ -3,5 +3,5 @@
 // Throwaway Route
 $app->get('/', '\App\Controller\Root:Root');
 
-// For the turrent to check
-$app->get('/turrent/check', '\App\Controller\Turrent:Check');
+// For the turret to check
+$app->get('/turret/check', '\App\Controller\Turret:Check');

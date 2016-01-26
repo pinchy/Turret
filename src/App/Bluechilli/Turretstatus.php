@@ -2,7 +2,7 @@
 
 namespace App\Bluechilli;
 
-class Turretstatus
+class TurretStatus
 {
 
     var $fire;
@@ -11,7 +11,7 @@ class Turretstatus
     var $use_door;
     var $door_code;
 
-    public function generateString()
+    public function toString()
     {
         $str = ($this->fire) ? '1' : '0';
         $str .= str_pad($this->a, 5, '0', STR_PAD_LEFT);
