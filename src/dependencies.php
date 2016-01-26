@@ -6,7 +6,7 @@ $container = $app->getContainer();
 
 // Controller Deps
 
-$container['\App\Controller\Turrent'] = function ($c) {
-    $turrentstatus = new \App\Bluechilli\Turretstatus();
-    return new \App\Controller\Turrent($turrentstatus);
+$container['\App\Controller\Turret'] = function ($c) {
+    $FireCommand = new \App\Bluechilli\FireCommand();
+    return new \App\Controller\Turret($FireCommand);
 };
