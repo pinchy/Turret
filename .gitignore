@@ -1,6 +1,7 @@
 /vendor/
 /logs/*
 !/logs/README.md
+/src/db/*
 .idea
 .DS_Store
 .DS_Store?

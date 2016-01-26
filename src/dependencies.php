@@ -7,6 +7,6 @@ $container = $app->getContainer();
 // Controller Deps
 
 $container['\App\Controller\Turret'] = function ($c) {
-    $FireCommand = new \App\Bluechilli\FireCommand();
-    return new \App\Controller\Turret($FireCommand);
+    $FireOrder = new \App\Bluechilli\FireOrder();
+    return new \App\Controller\Turret($FireOrder);
 };
