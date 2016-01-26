@@ -7,7 +7,7 @@ $app->get('/', '\App\Controller\Root:Root');
 $app->get('/turret/check', '\App\Controller\Turret:Check');
 
 // For webhooks
-$app->get('/webhooks/slack', '\App\Controller\Slack:Webhook');
-//$app->get('/webhooks/teamcity', '\App\Controller\TeamCity:Webhook');
+$app->post('/webhooks/slack', '\App\Controller\Slack:Webhook');
+//$app->post('/webhooks/teamcity', '\App\Controller\TeamCity:Webhook');
 
 

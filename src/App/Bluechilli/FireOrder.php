@@ -10,6 +10,7 @@ class FireOrder
     public $use_door;
     public $door_code;
     public $pending;
+    public $message;
 
     private $_db;
 
@@ -29,7 +30,8 @@ class FireOrder
                     'e' => $this->e,
                     'use_door' => $this->use_door,
                     'door_code' => $this->door_code,
-                    'pending' => $this->pending])
+                    'pending' => $this->pending,
+                    'message' => $this->message])
             ->execute();
     }
 
@@ -45,6 +47,16 @@ class FireOrder
         $this->use_door = $orders['use_door'];
         $this->door_code = $orders['door_code'];
         $this->pending = $orders['pending'];
+        $this->message = $orders['message'];
+    }
+
+    // save who did it!
+    public function log()
+    {
+        $this->_db->insert()->in('log')  
+        ->set([ 'time' => time(),
+                'message' => $this->message])
+            ->execute();
     }
 
     public function toString()

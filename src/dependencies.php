@@ -14,5 +14,5 @@ $container['\App\Controller\Turret'] = function ($c) {
 
 $container['\App\Controller\Slack'] = function ($c) {
     $FireOrder = new \App\Bluechilli\FireOrder();
-    return new \App\Controller\Turret($FireOrder);
+    return new \App\Controller\Slack($FireOrder);
 };
