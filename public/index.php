@@ -10,13 +10,16 @@ if (PHP_SAPI == 'cli-server') {
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$Test = new App\Controller\Root();
+// App Config
+$dotenv = new Dotenv\Dotenv("..");
+$dotenv->load();
+$config = new App\Bluechilli\Config("../src/Config");
 
 session_start();
 
 // Instantiate the app
-$settings = require __DIR__ . '/../src/settings.php';
-$app = new \Slim\App($settings);
+
+$app = new \Slim\App(["config" => $config()]);
 
 // Set up dependencies
 require __DIR__ . '/../src/dependencies.php';

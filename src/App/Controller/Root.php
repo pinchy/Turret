@@ -4,9 +4,17 @@ namespace App\Controller;
 
 class Root
 {
+
+    var $settings;
+
+    public function __construct($appConfig)
+    {
+        $this->appConfig = $appConfig;
+    }
+
     public function Root($request, $response, $args)
     {
-        $response->write("Hello World");
+        return $response->write("Hello World");
     }
 
 
