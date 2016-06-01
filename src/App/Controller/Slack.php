@@ -18,21 +18,23 @@ class Slack
     {
 
         // TODO: abstract slack return notification
+        // TODO: provide switch on commands. 
+        // turret shoot name
+        // turret add name az el git door
+        // turret aim name
 
         // Parse data
         $req = $request->getParsedBody();
         
         // check token
-        if($req['token'] != 'TOKEN')
+        if($req['token'] != 'Bwmk30e3mBXmuEKCFttgYRAe')
         {
-           // exit();
+           $payload = ["text" => "Invalid token"]; 
         }
-        
 
-
-        if($req['text'] == 'help')
+        else if($req['text'] == 'help')
         {
-            $payload = ["text" => "Enter /shoot followed by the username of your target. You'll need to do this in #general"]; 
+            $payload = ["text" => "Enter /shoot followed by the username of your target. You'll need to do this in #turret"]; 
         }
 
         else if(substr($req['text'], 0, 3) == 'add')
@@ -46,42 +48,80 @@ class Slack
                 ->execute();
 
             $payload = ["text" => $username . " added at azimuth: ". $a. ", elevation: ". $e];
-
         }
 
-        else if($req['channel_name'] != 'general')
+        else if(substr($req['text'], 0, 3) == 'aim')
         {
-            $payload = ["text" => "No ninja shooting for you! Turret Bot only works in #general :ninja:"];
-        } 
+            list($cmd, $a, $e) = explode (" ", $req['text']);
+
+            $this->FireOrder->fire = false;
+            $this->FireOrder->a = $a;
+            $this->FireOrder->e = $e;
+            $this->FireOrder->use_door = false;
+            $this->FireOrder->door_code = rand(0, 999);  // TODO
+            $this->FireOrder->pending = true;  
+            $this->FireOrder->message = $req['user_name']." shot someone!";
+
+            // Save data
+            $this->FireOrder->save();
+            $payload = ["text"=> "Aimed at a:".$a." e:".$e];
+        }
+
+        else if(substr($req['text'], 0, 4) == 'fire')
+        {
+            list($cmd, $a, $e) = explode (" ", $req['text']);
+
+            $this->FireOrder->fire = true;
+            $this->FireOrder->a = $a;
+            $this->FireOrder->e = $e;
+            $this->FireOrder->use_door = false;
+            $this->FireOrder->door_code = rand(0, 999);  // TODO
+            $this->FireOrder->pending = true;  
+            $this->FireOrder->message = $req['user_name']." shot someone!";
+
+            // Save data
+            $this->FireOrder->save();
+            $payload = ["text"=> "Fired at a:".$a." e:".$e];
+        }
+        
+        else if($req['channel_name'] != 'turret')
+        {
+            $payload = ["text" => "No ninja shooting for you! Turret Bot only works in #turret :ninja:"];
+            
+            $target = strtolower(str_replace('@', '', strtok(trim($req['user_name']), " ")));
+            
+            if($this->_db->read()->in('users')->where('slack', '=', $target)->count() > 0)
+                $this->loadFireOrder($target);
+        }
+         
         else
         {
             $target = strtolower(str_replace('@', '', strtok(trim($req['text']), " ")));
 
-            if($this->_db->read()->in('users')->where('slack', '=', $target)->count() == 0)
+            if($target == "anyone")
+            {
+                $count = $this->_db->read()->in('users')->count();
+                $id = rand(0, $count);
+
+                $output = $this->_db->read()->in('users')->where('id', '==', $id)->first();
+                $this->loadFireOrder($output['slack']);
+
+                $payload = ["response_type"=> "in_channel", "text"=> $req['user_name']." shot someone at random!"];
+
+            }
+
+            else if($this->_db->read()->in('users')->where('slack', '=', $target)->count() == 0)
             {
                 $payload = ["response_type"=> "in_channel", "text"=> "Misfire! " . $req['user_name']." tried to shoot " .$target.", but they got out of the way! :ninja:"];
             }
+
             else
             {
-                // look up target in database
-                $coordinates = $this->_db->read()->in('users')
-                    ->where('slack', '=', $target)
-                    ->first();
 
-                $this->FireOrder->fire = true;
-                $this->FireOrder->a = $coordinates['a'];
-                $this->FireOrder->e = $coordinates['e'];
-                $this->FireOrder->use_door = false;
-                $this->FireOrder->door_code = rand(0, 999);  // TODO
-                $this->FireOrder->pending = true;  // TODO
-                $this->FireOrder->message = $req['user_name']." shot " .$target ."!";
-
-                // Save data
-                $this->FireOrder->save();
+                $this->loadFireOrder($target);
 
                 // TOOD remove this and have deferred general message instead
-                $payload = ["response_type"=> "in_channel", "text"=> $req['user_name']." shot " .$target ."!"];
-
+                $payload = ["response_type"=> "in_channel", "text"=> $req['user_name']." shot someone!"];
             }
         }
 
@@ -91,5 +131,25 @@ class Slack
         
         // Payload
         return $response->write(json_encode($payload));
+    }
+
+    public function loadFireOrder($target)
+    {
+        // look up target in database
+        $coordinates = $this->_db->read()->in('users')
+            ->where('slack', '=', $target)
+            ->first();
+
+        $this->FireOrder->fire = true;
+        $this->FireOrder->a = $coordinates['a'];
+        $this->FireOrder->e = $coordinates['e'];
+        $this->FireOrder->use_door = false;
+        $this->FireOrder->door_code = rand(0, 999);  // TODO
+        $this->FireOrder->pending = true;  // TODO
+        $this->FireOrder->message = $req['user_name']." shot " .$target ."!";
+        //$this->FireOrder->message = $req['user_name']." shot someone!";
+
+        // Save data
+        $this->FireOrder->save();
     }
 }
