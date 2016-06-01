@@ -62,6 +62,10 @@ class Slack
         else if(substr($req['text'], 0, 3) == 'list')
         {
           
+            $users = $this->_db->read()->in('users');
+
+            $payload = ["text" => implode($users)];
+            
 
         }
 
