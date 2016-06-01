@@ -9,7 +9,7 @@ class Slack
     public function __construct(\App\Bluechilli\FireOrder $FireOrder)
     {
         $this->FireOrder = $FireOrder;
-        $this->commandlist = array('add', 'list','anyone','aim','fire');
+        $this->_commandList = array('add', 'list','anyone','aim','fire');
 
         $storage = new \Flatbase\Storage\Filesystem('../src/db');
         $this->_db = new \Flatbase\Flatbase($storage);
@@ -43,7 +43,7 @@ class Slack
             // /shoot add username azimuth elevation (github)
             list($cmd, $username, $a, $e, $github) = explode (" ", $req['text']);
 
-            if(in_array($username, $this->commandlist))
+            if(in_array($username, $this->_commandList))
             {
                 $payload = ["text" => $username . " is a protected command word and can't be used "];
             }
@@ -61,7 +61,7 @@ class Slack
 
         else if(substr($req['text'], 0, 3) == 'list')
         {
-
+          
 
         }
 
