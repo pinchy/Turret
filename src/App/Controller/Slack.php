@@ -64,7 +64,12 @@ class Slack
           
             $users = $this->_db->read()->in('users');
 
-            $payload = ["text" => implode($users)];
+            foreach($users as $user)
+            {
+                $str .= "\n" . $user['slack'] . " at " . $user['a'] . " " . $user['e'];
+            }
+
+            $payload = ["text" => "Users registered:" . $str];
             
 
         }
