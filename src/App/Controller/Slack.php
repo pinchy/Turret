@@ -59,7 +59,7 @@ class Slack
             }
         }
 
-        else if(substr($req['text'], 0, 3) == 'list')
+        else if(substr($req['text'], 0, 4) == 'list')
         {
           
             $users = $this->_db->read()->in('users');
