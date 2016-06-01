@@ -62,7 +62,7 @@ class Slack
         else if(substr($req['text'], 0, 4) == 'list')
         {
           
-            $users = $this->_db->read()->in('users');
+            $users = $this->_db->read()->in('users')->get();
 
             foreach($users as $user)
             {
